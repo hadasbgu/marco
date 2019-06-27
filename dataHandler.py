@@ -46,7 +46,9 @@ class DataHandler:
         return 0
 
     def general_parameter_analysis(self, doc):
-        return 1
+        rate = doc['price_of_reservation'] / 60141 + doc['price_of_reservation'] / 16
+        return rate
+
 
     def timed_analyis(self, doc):
         check_in = {50: 0, 30: 0.1, 20: 0.3, 15: 0.5, 10: 0.65, 5: 0.75, 3: 0.85, 2: 0.95, 1: 1, -1: 1, -4: 0.5, -7: 0}
