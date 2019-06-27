@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-virtualenv venv
+virtualenv venv -p python3

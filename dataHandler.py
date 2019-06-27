@@ -1,4 +1,6 @@
 import pymongo
+import sentiment_score
+
 
 class DataHandler:
     def __init__(self):
@@ -13,7 +15,6 @@ class DataHandler:
         self.TIME_WEIGHT = 1
         self.GENERAL_SCORE = 1
 
-
     def read_and_analyze(self):
         for doc in self.coll.find():
             doc['sentiment_score'] = self.sentiment_analysis(doc)
@@ -21,17 +22,18 @@ class DataHandler:
             doc['general_score'] = self.general_parameter_analysis(doc)
             doc['timed_score'] = self.timed_analyis(doc)
             doc['grade'] = doc['sentiment_score'] * self.SENTIMENT_WEIGHT + doc['keywords_score'] * self.KEYWORDS_WEIGHT \
-                        + doc['general_score'] * self.GENERAL_SCORE + doc['timed_score'] * self.TIME_WEIGHT + self.BIAS
+                           + doc['general_score'] * self.GENERAL_SCORE + doc[
+                               'timed_score'] * self.TIME_WEIGHT + self.BIAS
             self.coll.save(doc)
 
-    def get_most_urgent_messages(self,limit=10):
-        result = self.coll.find().limit(limit).sort("grade",pymongo.DESCENDING)
+    def get_most_urgent_messages(self, limit=10):
+        result = self.coll.find().limit(limit).sort("grade", pymongo.DESCENDING)
         for doc in result:
             print(doc['grade'])
             print(doc['message'])
 
     def sentiment_analysis(self, doc):
-        return 1
+        return sentiment_score.get_score(doc["message"])
 
     def keywords_analysis(self, doc):
         keywords = ['asap', 'urgent', 'as soon as possible', 'acute', 'burning', 'clamant', 'compelling', 'critical', 'crying', 'dire', 'emergent', 'exigent', 'imperative', 'imperious', 'importunate', 'instant', 'necessitous', 'pressing']
@@ -46,9 +48,8 @@ class DataHandler:
     def timed_analyis(self, doc):
         return 1
 
+
 if __name__ == "__main__":
     handler = DataHandler()
     handler.read_and_analyze()
     handler.get_most_urgent_messages()
-
-
