@@ -39,7 +39,7 @@ class DataHandler:
         return 1
 
     def general_parameter_analysis(self, doc):
-        return 1
+        doc['number_of_guests'] / 15 + doc['price_of_reservation'] /1000
 
     def timed_analyis(self, doc):
         return 1
