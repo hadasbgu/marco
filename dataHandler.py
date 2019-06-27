@@ -21,10 +21,10 @@ class DataHandler:
             doc['keywords_score'] = self.keywords_analysis(doc)
             doc['general_score'] = self.general_parameter_analysis(doc)
             doc['timed_score'] = self.timed_analyis(doc)
-            doc['grade'] = (doc['sentiment_score'] * self.SENTIMENT_WEIGHT + doc[
-                'keywords_score'] * self.KEYWORDS_WEIGHT
-                            + doc['general_score'] * self.GENERAL_SCORE + doc[
-                                'timed_score'] * self.TIME_WEIGHT) / 4 + self.BIAS
+            doc['grade'] = (doc['sentiment_score'] * self.SENTIMENT_WEIGHT +
+                            doc['keywords_score'] * self.KEYWORDS_WEIGHT +
+                            doc['general_score'] * self.GENERAL_SCORE +
+                            doc['timed_score'] * self.TIME_WEIGHT) / 4 + self.BIAS
             self.coll.save(doc)
 
     def get_most_urgent_messages(self, limit=10):
@@ -46,10 +46,25 @@ class DataHandler:
         return 0
 
     def general_parameter_analysis(self, doc):
-        return doc['number_of_guests'] / 15 + doc['price_of_reservation'] / 1000
+        return 1
 
     def timed_analyis(self, doc):
-        return 1
+        check_in = {50: 0, 30: 0.1, 20: 0.3, 15: 0.5, 10: 0.65, 5: 0.75, 3: 0.85, 2: 0.95, 1: 1, -1: 1, -4: 0.5, -7: 0}
+
+        rate = 0.5
+        for x in check_in:
+            if doc["days_until_check_out"] >= x:  ## there is a mistake in input
+                rate = x
+                break
+
+        check_out = {20: 0.1, 10: 0.25, 5: 0.5, 2: 0.75, 1: 0.9, 0: 1}
+        for x in check_out:
+            if doc["days_until_check_in"] >= x:  # there is a mistake in input
+                rate = rate + check_out[x]
+                rate = rate / 2
+                break
+
+        return rate
 
 
 if __name__ == "__main__":
