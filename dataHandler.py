@@ -46,7 +46,9 @@ class DataHandler:
         return 0
 
     def general_parameter_analysis(self, doc):
-        rate = doc['price_of_reservation'] / 60141 + doc['price_of_reservation'] / 16
+        rate = doc['price_of_reservation'] / 60141 + doc['number_of_guests'] / 16
+        rate = rate / 2
+
         return rate
 
 
