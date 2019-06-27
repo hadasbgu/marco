@@ -36,7 +36,11 @@ class DataHandler:
         return sentiment_score.get_score(doc["message"])
 
     def keywords_analysis(self, doc):
-        return 1
+        keywords = ['asap', 'urgent', 'as soon as possible', 'acute', 'burning', 'clamant', 'compelling', 'critical', 'crying', 'dire', 'emergent', 'exigent', 'imperative', 'imperious', 'importunate', 'instant', 'necessitous', 'pressing']
+        for keyword in keywords:
+            if keyword in doc['message'].lower():
+                return 1;
+        return 0;
 
     def general_parameter_analysis(self, doc):
         return doc['number_of_guests'] / 15 + doc['price_of_reservation'] /1000
